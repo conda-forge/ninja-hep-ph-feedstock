@@ -15,7 +15,7 @@ source:
 build:
   # libquadmath is required, so macOS is not supported
   skip: true  # [not linux]
-  number: 0
+  number: 1
   run_exports:
     - {{ pin_subpackage('ninja-hep-ph', max_pin='x.x') }}
 
