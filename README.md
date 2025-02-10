@@ -71,6 +71,7 @@ Current release info
 | Name | Downloads | Version | Platforms |
 | --- | --- | --- | --- |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-ninja--hep--ph-green.svg)](https://anaconda.org/conda-forge/ninja-hep-ph) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/ninja-hep-ph.svg)](https://anaconda.org/conda-forge/ninja-hep-ph) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/ninja-hep-ph.svg)](https://anaconda.org/conda-forge/ninja-hep-ph) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/ninja-hep-ph.svg)](https://anaconda.org/conda-forge/ninja-hep-ph) |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-ninja--hep--ph--static-green.svg)](https://anaconda.org/conda-forge/ninja-hep-ph-static) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/ninja-hep-ph-static.svg)](https://anaconda.org/conda-forge/ninja-hep-ph-static) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/ninja-hep-ph-static.svg)](https://anaconda.org/conda-forge/ninja-hep-ph-static) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/ninja-hep-ph-static.svg)](https://anaconda.org/conda-forge/ninja-hep-ph-static) |
 
 Installing ninja-hep-ph
 =======================
@@ -82,16 +83,16 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `ninja-hep-ph` can be installed with `conda`:
+Once the `conda-forge` channel has been enabled, `ninja-hep-ph, ninja-hep-ph-static` can be installed with `conda`:
 
 ```
-conda install ninja-hep-ph
+conda install ninja-hep-ph ninja-hep-ph-static
 ```
 
 or with `mamba`:
 
 ```
-mamba install ninja-hep-ph
+mamba install ninja-hep-ph ninja-hep-ph-static
 ```
 
 It is possible to list all of the versions of `ninja-hep-ph` available on your platform with `conda`:
