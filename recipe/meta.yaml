@@ -20,7 +20,7 @@ build:
 outputs:
   - name: {{ name }}-hep-ph
 
-    script: build.sh
+    script: build_shared.sh
 
     build:
       # libquadmath is required, so macOS is not supported
