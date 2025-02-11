@@ -20,6 +20,8 @@ build:
 outputs:
   - name: {{ name }}-hep-ph
 
+    script: build.sh
+
     build:
       # libquadmath is required, so macOS is not supported
       skip: true  # [not linux]
@@ -126,10 +128,11 @@ outputs:
 
   - name: {{ name }}-hep-ph-static
 
+    script: build_static.sh
+
     build:
       # libquadmath is required, so macOS is not supported
       skip: true  # [not linux]
-      script: build_static.sh
 
     requirements:
       build:
