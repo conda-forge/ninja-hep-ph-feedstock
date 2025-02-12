@@ -115,7 +115,7 @@ outputs:
         # Given the way the examples/Makefile works, need to regenerate it and
         # other supporting files with configure again
         - autoreconf --install
-        - ./configure --prefix=$PREFIX --enable-static=no --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
         - make examples
 
         - cd examples
@@ -238,7 +238,7 @@ outputs:
         # Given the way the examples/Makefile works, need to regenerate it and
         # other supporting files with configure again
         - autoreconf --install
-        - ./configure --prefix=$PREFIX --enable-static=yes --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
         - make examples
 
         - cd examples
