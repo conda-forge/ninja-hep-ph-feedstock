@@ -12,11 +12,14 @@ autoreconf --install
 # https://github.com/conda-forge/cfep/blob/main/cfep-18.md
 ./configure \
     --prefix=$PREFIX \
+    --enable-shared=yes \
     --enable-static=no \
-    --enable-quadninja=yes \
+    --enable-higher_rank \
+    --enable-quadninja \
     --with-avholo="$FFLAGS -lavh_olo" \
     --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" \
-    FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+    FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
+    CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
 
 # Makefile is not parallel safe so can't use 'make --jobs="${CPU_COUNT}"'
 make
