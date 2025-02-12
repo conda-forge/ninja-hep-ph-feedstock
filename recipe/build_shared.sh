@@ -13,6 +13,7 @@ autoreconf --install
 ./configure \
     --prefix=$PREFIX \
     --enable-static=no \
+    --enable-quadninja=yes \
     --with-avholo="$FFLAGS -lavh_olo" \
     --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" \
     FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"

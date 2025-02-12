@@ -15,7 +15,7 @@ source:
     - update-version-number-to-v1.2.0.patch
 
 build:
-  number: 2
+  number: 3
 
 outputs:
   - name: {{ name }}-hep-ph
@@ -68,27 +68,45 @@ outputs:
         # c.f. https://github.com/conda/conda-build/issues/3075
         - test ! -f $PREFIX/lib/libninja.la
         - test ! -f $PREFIX/lib/libninja.a
-        - test -f $PREFIX/include/ninja/zero_float.hh
-        - test -f $PREFIX/include/ninja/types.hh
-        - test -f $PREFIX/include/ninja/tensor_ninja.hh
-        - test -f $PREFIX/include/ninja/ninja_in.hh
-        - test -f $PREFIX/include/ninja/ninja.hh
-        - test -f $PREFIX/include/ninja/thread_safe_integral_library.hh
-        - test -f $PREFIX/include/ninja/static_arrays.hh
-        - test -f $PREFIX/include/ninja/spinors.hh
-        - test -f $PREFIX/include/ninja/s_mat.hh
-        - test -f $PREFIX/include/ninja/rambo.hh
-        - test -f $PREFIX/include/ninja/num_defs.hh
-        - test -f $PREFIX/include/ninja/ninjanumgen.hh
-        - test -f $PREFIX/include/ninja/momentum.hh
-        - test -f $PREFIX/include/ninja/looptools.hh
-        - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/avholo.hh
-        - test -f $PREFIX/include/ninja/ninja_config.h
-        - test -f $PREFIX/include/ninjavholo.mod
-        - test -f $PREFIX/include/ninjago_module.mod
-        - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/bin/ninja-config
+        - test -f $PREFIX/include/mninja.mod
+        - test -f $PREFIX/include/ninja/avholo.hh
+        - test -f $PREFIX/include/ninja/integral_library.hh
+        - test -f $PREFIX/include/ninja/looptools.hh
+        - test -f $PREFIX/include/ninja/momentum.hh
+        - test -f $PREFIX/include/ninja/ninja.hh
+        - test -f $PREFIX/include/ninja/ninja_config.h
+        - test -f $PREFIX/include/ninja/ninja_in.hh
+        - test -f $PREFIX/include/ninja/ninjanumgen.hh
+        - test -f $PREFIX/include/ninja/num_defs.hh
+        - test -f $PREFIX/include/ninja/rambo.hh
+        - test -f $PREFIX/include/ninja/s_mat.hh
+        - test -f $PREFIX/include/ninja/spinors.hh
+        - test -f $PREFIX/include/ninja/static_arrays.hh
+        - test -f $PREFIX/include/ninja/tensor_ninja.hh
+        - test -f $PREFIX/include/ninja/thread_safe_integral_library.hh
+        - test -f $PREFIX/include/ninja/types.hh
+        - test -f $PREFIX/include/ninja/zero_float.hh
+        - test -f $PREFIX/include/ninjago_module.mod
+        - test -f $PREFIX/include/ninjavholo.mod
+        - test -f $PREFIX/include/quadninja/avholo.hh
+        - test -f $PREFIX/include/quadninja/integral_library.hh
+        - test -f $PREFIX/include/quadninja/looptools.hh
+        - test -f $PREFIX/include/quadninja/momentum.hh
+        - test -f $PREFIX/include/quadninja/ninja.hh
+        - test -f $PREFIX/include/quadninja/ninja_config.h
+        - test -f $PREFIX/include/quadninja/ninja_in.hh
+        - test -f $PREFIX/include/quadninja/ninjanumgen.hh
+        - test -f $PREFIX/include/quadninja/num_defs.hh
+        - test -f $PREFIX/include/quadninja/quadruple.hh
+        - test -f $PREFIX/include/quadninja/rambo.hh
+        - test -f $PREFIX/include/quadninja/s_mat.hh
+        - test -f $PREFIX/include/quadninja/spinors.hh
+        - test -f $PREFIX/include/quadninja/static_arrays.hh
+        - test -f $PREFIX/include/quadninja/tensor_ninja.hh
+        - test -f $PREFIX/include/quadninja/thread_safe_integral_library.hh
+        - test -f $PREFIX/include/quadninja/types.hh
+        - test -f $PREFIX/include/quadninja/zero_float.hh
 
         - ninja-config --help
         - ninja-config --version
@@ -144,13 +162,11 @@ outputs:
         - make
         - pkg-config
         - gnuconfig
-        - oneloop  # [build_platform != target_platform]
+        - oneloop-static  # [build_platform != target_platform]
         - looptools-static  # [build_platform != target_platform]
       host:
-        - oneloop
+        - oneloop-static
         - looptools-static
-      run:
-        - oneloop
 
     test:
       # As need to regenerate Makefiles, need all of the source files that
@@ -167,34 +183,53 @@ outputs:
         - automake
         - libtool
         - make
-        # libooptools.a is needed at linktime, but not at runtime
+        # libooptools.a and libavh_olo.a are needed at linktime, but not at runtime
         - looptools-static
+        - oneloop-static
       commands:
         - test -f $PREFIX/lib/libninja.a
         # c.f. https://github.com/conda/conda-build/issues/3075
         - test ! -f $PREFIX/lib/libninja.la
         - test ! -f $PREFIX/lib/libninja${SHLIB_EXT}
-        - test -f $PREFIX/include/ninja/zero_float.hh
-        - test -f $PREFIX/include/ninja/types.hh
-        - test -f $PREFIX/include/ninja/tensor_ninja.hh
-        - test -f $PREFIX/include/ninja/ninja_in.hh
-        - test -f $PREFIX/include/ninja/ninja.hh
-        - test -f $PREFIX/include/ninja/thread_safe_integral_library.hh
-        - test -f $PREFIX/include/ninja/static_arrays.hh
-        - test -f $PREFIX/include/ninja/spinors.hh
-        - test -f $PREFIX/include/ninja/s_mat.hh
-        - test -f $PREFIX/include/ninja/rambo.hh
-        - test -f $PREFIX/include/ninja/num_defs.hh
-        - test -f $PREFIX/include/ninja/ninjanumgen.hh
-        - test -f $PREFIX/include/ninja/momentum.hh
-        - test -f $PREFIX/include/ninja/looptools.hh
-        - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/avholo.hh
-        - test -f $PREFIX/include/ninja/ninja_config.h
-        - test -f $PREFIX/include/ninjavholo.mod
-        - test -f $PREFIX/include/ninjago_module.mod
-        - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/bin/ninja-config
+        - test -f $PREFIX/include/mninja.mod
+        - test -f $PREFIX/include/ninja/avholo.hh
+        - test -f $PREFIX/include/ninja/integral_library.hh
+        - test -f $PREFIX/include/ninja/looptools.hh
+        - test -f $PREFIX/include/ninja/momentum.hh
+        - test -f $PREFIX/include/ninja/ninja.hh
+        - test -f $PREFIX/include/ninja/ninja_config.h
+        - test -f $PREFIX/include/ninja/ninja_in.hh
+        - test -f $PREFIX/include/ninja/ninjanumgen.hh
+        - test -f $PREFIX/include/ninja/num_defs.hh
+        - test -f $PREFIX/include/ninja/rambo.hh
+        - test -f $PREFIX/include/ninja/s_mat.hh
+        - test -f $PREFIX/include/ninja/spinors.hh
+        - test -f $PREFIX/include/ninja/static_arrays.hh
+        - test -f $PREFIX/include/ninja/tensor_ninja.hh
+        - test -f $PREFIX/include/ninja/thread_safe_integral_library.hh
+        - test -f $PREFIX/include/ninja/types.hh
+        - test -f $PREFIX/include/ninja/zero_float.hh
+        - test -f $PREFIX/include/ninjago_module.mod
+        - test -f $PREFIX/include/ninjavholo.mod
+        - test -f $PREFIX/include/quadninja/avholo.hh
+        - test -f $PREFIX/include/quadninja/integral_library.hh
+        - test -f $PREFIX/include/quadninja/looptools.hh
+        - test -f $PREFIX/include/quadninja/momentum.hh
+        - test -f $PREFIX/include/quadninja/ninja.hh
+        - test -f $PREFIX/include/quadninja/ninja_config.h
+        - test -f $PREFIX/include/quadninja/ninja_in.hh
+        - test -f $PREFIX/include/quadninja/ninjanumgen.hh
+        - test -f $PREFIX/include/quadninja/num_defs.hh
+        - test -f $PREFIX/include/quadninja/quadruple.hh
+        - test -f $PREFIX/include/quadninja/rambo.hh
+        - test -f $PREFIX/include/quadninja/s_mat.hh
+        - test -f $PREFIX/include/quadninja/spinors.hh
+        - test -f $PREFIX/include/quadninja/static_arrays.hh
+        - test -f $PREFIX/include/quadninja/tensor_ninja.hh
+        - test -f $PREFIX/include/quadninja/thread_safe_integral_library.hh
+        - test -f $PREFIX/include/quadninja/types.hh
+        - test -f $PREFIX/include/quadninja/zero_float.hh
 
         - ninja-config --help
         - ninja-config --version
