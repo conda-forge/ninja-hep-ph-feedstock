@@ -8,11 +8,10 @@ autoreconf --install
 
 ./configure --help
 
-# Remove static library to comply with CFEP-18
-# https://github.com/conda-forge/cfep/blob/main/cfep-18.md
 ./configure \
     --prefix=$PREFIX \
     --enable-static=yes \
+    --enable-quadninja=yes \
     --with-avholo="$FFLAGS -lavh_olo" \
     --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" \
     FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
@@ -28,4 +27,4 @@ make install
 make clean
 
 # Remove automatically built shared library
-rm $PREFIX/lib/libninja.so.*
+rm $PREFIX/lib/libninja.so*
