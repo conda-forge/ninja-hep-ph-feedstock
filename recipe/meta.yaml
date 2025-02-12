@@ -1,5 +1,5 @@
 {% set name = "ninja" %}
-{% set version = "1.2.0" %}
+{% set version = "1.1.0" %}
 
 package:
   # Have top level name be unique from any outputs
@@ -8,14 +8,12 @@ package:
   version: {{ version }}
 
 source:
-  url: https://github.com/peraro/ninja/archive/v{{ version }}.tar.gz
-  sha256: b9709aada408286b6533ac7427bab9d1364d449a9c11098c324ea0875fe9a9e1
-  patches:
-    - posix-compliant-shell.patch
-    - update-version-number-to-v1.2.0.patch
+  # https://github.com/peraro/ninja/releases/tag/v1.1.0 fails to compile so fall back to hepforge
+  url: https://www.hepforge.org/archive/ninja/ninja-{{ version }}.tar.gz
+  sha256: 04b544a8b9d3e5be28e60d7e808ee4a91e9e5196783148b5e6ec5046e78e836b
 
 build:
-  number: 4
+  number: 0
 
 outputs:
   - name: {{ name }}-hep-ph
@@ -39,10 +37,8 @@ outputs:
         - pkg-config
         - gnuconfig
         - oneloop  # [build_platform != target_platform]
-        - looptools-static  # [build_platform != target_platform]
       host:
         - oneloop
-        - looptools-static
       run:
         - oneloop
 
@@ -61,8 +57,6 @@ outputs:
         - automake
         - libtool
         - make
-        # libooptools.a is needed at linktime, but not at runtime
-        - looptools-static
       commands:
         - test -f $PREFIX/lib/libninja${SHLIB_EXT}
         # c.f. https://github.com/conda/conda-build/issues/3075
@@ -72,7 +66,6 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/looptools.hh
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
@@ -91,7 +84,6 @@ outputs:
         - test -f $PREFIX/include/ninjavholo.mod
         - test -f $PREFIX/include/quadninja/avholo.hh
         - test -f $PREFIX/include/quadninja/integral_library.hh
-        - test -f $PREFIX/include/quadninja/looptools.hh
         - test -f $PREFIX/include/quadninja/momentum.hh
         - test -f $PREFIX/include/quadninja/ninja.hh
         - test -f $PREFIX/include/quadninja/ninja_config.h
@@ -115,7 +107,7 @@ outputs:
         # Given the way the examples/Makefile works, need to regenerate it and
         # other supporting files with configure again
         - autoreconf --install
-        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
         - make examples
 
         - cd examples
@@ -137,7 +129,7 @@ outputs:
         # Show how to build manually
         - make clean
         - echo -e "\n# simple_test by hand"
-        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran -lquadmath
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran -lquadmath
         - ./simple_test
 
         - make clean
@@ -163,10 +155,8 @@ outputs:
         - pkg-config
         - gnuconfig
         - oneloop-static  # [build_platform != target_platform]
-        - looptools-static  # [build_platform != target_platform]
       host:
         - oneloop-static
-        - looptools-static
 
     test:
       # As need to regenerate Makefiles, need all of the source files that
@@ -183,8 +173,7 @@ outputs:
         - automake
         - libtool
         - make
-        # libooptools.a and libavh_olo.a are needed at linktime, but not at runtime
-        - looptools-static
+        # libavh_olo.a is needed at linktime, but not at runtime
         - oneloop-static
       commands:
         - test -f $PREFIX/lib/libninja.a
@@ -195,7 +184,6 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/looptools.hh
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
@@ -214,7 +202,6 @@ outputs:
         - test -f $PREFIX/include/ninjavholo.mod
         - test -f $PREFIX/include/quadninja/avholo.hh
         - test -f $PREFIX/include/quadninja/integral_library.hh
-        - test -f $PREFIX/include/quadninja/looptools.hh
         - test -f $PREFIX/include/quadninja/momentum.hh
         - test -f $PREFIX/include/quadninja/ninja.hh
         - test -f $PREFIX/include/quadninja/ninja_config.h
@@ -238,7 +225,7 @@ outputs:
         # Given the way the examples/Makefile works, need to regenerate it and
         # other supporting files with configure again
         - autoreconf --install
-        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo $FLDFLAGS -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
         - make examples
 
         - cd examples
@@ -260,7 +247,7 @@ outputs:
         # Show how to build manually
         - make clean
         - echo -e "\n# simple_test by hand"
-        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran -lquadmath
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran -lquadmath
         - ./simple_test
 
         - make clean
