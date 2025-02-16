@@ -47,6 +47,8 @@ else
         CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
 fi
 
+cat Makefile  # [osx]
+
 # Makefile is not parallel safe so can't use 'make --jobs="${CPU_COUNT}"'
 make
 
