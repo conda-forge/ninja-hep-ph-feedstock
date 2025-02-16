@@ -25,16 +25,28 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
     if [[ "$(uname)" == "Darwin" ]]; then
         export CXXFLAGS="-x c++ ${CXXFLAGS}"
     fi
-    ./configure \
-        --prefix=$PREFIX \
-        --enable-shared=no \
-        --enable-static=yes \
-        --enable-higher_rank \
-        --disable-quadninja \
-        --with-avholo="$FFLAGS -lavh_olo" \
-        --with-looptools="$FLDFLAGS -looptools -lgfortran" \
-        FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
-        CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
+    if [[ "${target_platform}" == osx-arm64 ]]; then
+        ./configure \
+            --prefix=$PREFIX \
+            --enable-shared=no \
+            --enable-static=yes \
+            --enable-higher_rank \
+            --disable-quadninja \
+            --with-avholo="$FFLAGS -lavh_olo" \
+            FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
+            CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
+    else
+        ./configure \
+            --prefix=$PREFIX \
+            --enable-shared=no \
+            --enable-static=yes \
+            --enable-higher_rank \
+            --disable-quadninja \
+            --with-avholo="$FFLAGS -lavh_olo" \
+            --with-looptools="$FLDFLAGS -looptools -lgfortran" \
+            FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
+            CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
+    fi
 else
     ./configure \
         --prefix=$PREFIX \
