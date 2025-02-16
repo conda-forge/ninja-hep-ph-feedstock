@@ -15,7 +15,7 @@ source:
     - update-version-number-to-v1.2.0.patch
 
 build:
-  number: 4
+  number: 5
 
 outputs:
   - name: {{ name }}-hep-ph
@@ -23,8 +23,7 @@ outputs:
     script: build_shared.sh
 
     build:
-      # libquadmath is required, so macOS is not supported
-      skip: true  # [not linux]
+      skip: true  # [win]
       run_exports:
         - {{ pin_subpackage('ninja-hep-ph', max_pin='x.x') }}
 
@@ -89,6 +88,7 @@ outputs:
         - test -f $PREFIX/include/ninja/zero_float.hh
         - test -f $PREFIX/include/ninjago_module.mod
         - test -f $PREFIX/include/ninjavholo.mod
+      {% if (linux and (x86_64 or ppc64le)) %}
         - test -f $PREFIX/include/quadninja/avholo.hh
         - test -f $PREFIX/include/quadninja/integral_library.hh
         - test -f $PREFIX/include/quadninja/looptools.hh
@@ -107,6 +107,9 @@ outputs:
         - test -f $PREFIX/include/quadninja/thread_safe_integral_library.hh
         - test -f $PREFIX/include/quadninja/types.hh
         - test -f $PREFIX/include/quadninja/zero_float.hh
+      {% else %}
+        - test ! -d $PREFIX/include/quadninja
+      {% endif %}
 
         - ninja-config --help
         - ninja-config --version
@@ -115,7 +118,12 @@ outputs:
         # Given the way the examples/Makefile works, need to regenerate it and
         # other supporting files with configure again
         - autoreconf --install
+
+      {% if (linux and (x86_64 or ppc64le)) %}
         - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+      {% else %}
+        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+      {% endif %}
         - make examples
 
         - cd examples
@@ -137,7 +145,11 @@ outputs:
         # Show how to build manually
         - make clean
         - echo -e "\n# simple_test by hand"
+      {% if (linux and (x86_64 or ppc64le)) %}
         - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran -lquadmath
+      {% else %}
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran
+      {% endif %}
         - ./simple_test
 
         - make clean
@@ -149,8 +161,7 @@ outputs:
     script: build_static.sh
 
     build:
-      # libquadmath is required, so macOS is not supported
-      skip: true  # [not linux]
+      skip: true  # [win]
 
     requirements:
       build:
@@ -212,6 +223,7 @@ outputs:
         - test -f $PREFIX/include/ninja/zero_float.hh
         - test -f $PREFIX/include/ninjago_module.mod
         - test -f $PREFIX/include/ninjavholo.mod
+      {% if (linux and (x86_64 or ppc64le)) %}
         - test -f $PREFIX/include/quadninja/avholo.hh
         - test -f $PREFIX/include/quadninja/integral_library.hh
         - test -f $PREFIX/include/quadninja/looptools.hh
@@ -230,6 +242,9 @@ outputs:
         - test -f $PREFIX/include/quadninja/thread_safe_integral_library.hh
         - test -f $PREFIX/include/quadninja/types.hh
         - test -f $PREFIX/include/quadninja/zero_float.hh
+      {% else %}
+        - test ! -d $PREFIX/include/quadninja
+      {% endif %}
 
         - ninja-config --help
         - ninja-config --version
@@ -238,7 +253,11 @@ outputs:
         # Given the way the examples/Makefile works, need to regenerate it and
         # other supporting files with configure again
         - autoreconf --install
+      {% if (linux and (x86_64 or ppc64le)) %}
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+      {% else %}
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+      {% endif %}
         - make examples
 
         - cd examples
@@ -260,7 +279,12 @@ outputs:
         # Show how to build manually
         - make clean
         - echo -e "\n# simple_test by hand"
+
+      {% if (linux and (x86_64 or ppc64le)) %}
         - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran -lquadmath
+      {% else %}
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran
+      {% endif %}
         - ./simple_test
 
         - make clean
