@@ -24,7 +24,9 @@ autoreconf --install
 # https://github.com/conda-forge/cfep/blob/main/cfep-18.md
 if [[ "${DISABLE_QUADMATH}" == true ]]; then
     echo -e "\n# libquadmath not supported on target platform ${target_platform} so disabling quadninja."
-    export CXXFLAGS="-x c++ ${CXXFLAGS}"  # [osx]
+    if [[ "$(uname)" == "Darwin" ]]; then
+        export CXXFLAGS="-x c++ ${CXXFLAGS}"
+    fi
     ./configure \
         --prefix=$PREFIX \
         --enable-shared=yes \
@@ -48,7 +50,9 @@ else
         CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
 fi
 
-cat Makefile  # [osx]
+if [[ "$(uname)" == "Darwin" ]]; then
+    cat Makefile
+fi
 
 # Makefile is not parallel safe so can't use 'make --jobs="${CPU_COUNT}"'
 make
