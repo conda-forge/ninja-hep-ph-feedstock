@@ -8,7 +8,7 @@ export DISABLE_QUADMATH=false
 if [[ "$(uname)" == "Darwin" ]]; then
     export DISABLE_QUADMATH=true
 fi
-if [[ "${TARGET_PLATFORM}" == linux-aarch64 ]]; then
+if [[ "${target_platform}" == linux-aarch64 ]]; then
     export DISABLE_QUADMATH=true
 fi
 
@@ -23,7 +23,7 @@ autoreconf --install
 # Remove static library to comply with CFEP-18
 # https://github.com/conda-forge/cfep/blob/main/cfep-18.md
 if [[ "${DISABLE_QUADMATH}" == true ]]; then
-    echo -e "\n# libquadmath not supported on target platform ${TARGET_PLATFORM} so disabling quadninja."
+    echo -e "\n# libquadmath not supported on target platform ${target_platform} so disabling quadninja."
     ./configure \
         --prefix=$PREFIX \
         --enable-shared=yes \
