@@ -22,6 +22,7 @@ autoreconf --install
 
 if [[ "${DISABLE_QUADMATH}" == true ]]; then
     echo -e "\n# libquadmath not supported on target platform ${target_platform} so disabling quadninja."
+    export CXXFLAGS="-x c++ ${CXXFLAGS}"  # [osx]
     ./configure \
         --prefix=$PREFIX \
         --enable-shared=no \
