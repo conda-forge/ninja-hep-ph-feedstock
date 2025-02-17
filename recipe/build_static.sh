@@ -23,7 +23,9 @@ autoreconf --install
 if [[ "${DISABLE_QUADMATH}" == true ]]; then
     echo -e "\n# libquadmath not supported on target platform ${target_platform} so disabling quadninja."
     if [[ "$(uname)" == "Darwin" ]]; then
-        export CXXFLAGS="-x c++ ${CXXFLAGS}"
+        # FIXME: Unbreak builds for macOS
+        # c.f. https://github.com/peraro/ninja/issues/5#issuecomment-2663059950
+        mv VERSION _VERSION
     fi
     if [[ "${target_platform}" == osx-arm64 ]]; then
         ./configure \
@@ -58,10 +60,6 @@ else
         --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" \
         FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
         CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
-fi
-
-if [[ "$(uname)" == "Darwin" ]]; then
-    cat Makefile
 fi
 
 # Makefile is not parallel safe so can't use 'make --jobs="${CPU_COUNT}"'
