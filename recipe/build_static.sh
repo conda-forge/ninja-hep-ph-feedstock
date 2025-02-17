@@ -7,6 +7,12 @@ export DISABLE_QUADMATH=false
 # libquadmath not supported on macOS or aarch64
 if [[ "$(uname)" == "Darwin" ]]; then
     export DISABLE_QUADMATH=true
+
+    # FIXME: Unbreak builds for macOS
+    # c.f. https://github.com/peraro/ninja/issues/5#issuecomment-2663059950
+    if [[ -f VERSION ]]; then
+        mv VERSION _VERSION
+    fi
 fi
 if [[ "${target_platform}" == linux-aarch64 ]]; then
     export DISABLE_QUADMATH=true
@@ -22,11 +28,6 @@ autoreconf --install
 
 if [[ "${DISABLE_QUADMATH}" == true ]]; then
     echo -e "\n# libquadmath not supported on target platform ${target_platform} so disabling quadninja."
-    if [[ "$(uname)" == "Darwin" ]]; then
-        # FIXME: Unbreak builds for macOS
-        # c.f. https://github.com/peraro/ninja/issues/5#issuecomment-2663059950
-        mv VERSION _VERSION
-    fi
     if [[ "${target_platform}" == osx-arm64 ]]; then
         ./configure \
             --prefix=$PREFIX \
