@@ -276,7 +276,8 @@ outputs:
       {% if (linux and (x86_64 or ppc64le)) %}
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
       {% else %}
-        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not (osx and arm64)]
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not osx]
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx and x86_64]
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [osx and arm64]
       {% endif %}
         - make examples

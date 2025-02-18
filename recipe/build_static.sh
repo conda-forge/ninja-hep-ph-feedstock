@@ -39,16 +39,30 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
             CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
     else
-        ./configure \
-            --prefix=$PREFIX \
-            --enable-shared=no \
-            --enable-static=yes \
-            --enable-higher_rank \
-            --disable-quadninja \
-            --with-avholo="$FFLAGS -lavh_olo" \
-            --with-looptools="$FLDFLAGS -looptools -lgfortran" \
-            FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
-            CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
+        if [[ "$(uname)" == "Darwin" ]]; then
+            ./configure \
+                --prefix=$PREFIX \
+                --enable-shared=no \
+                --enable-static=yes \
+                --enable-higher_rank \
+                --disable-quadninja \
+                --with-avholo="$FFLAGS -lavh_olo" \
+                --with-looptools="$FLDFLAGS -looptools -lgfortran" \
+                FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
+                CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS" \
+                LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"
+        else
+            ./configure \
+                --prefix=$PREFIX \
+                --enable-shared=no \
+                --enable-static=yes \
+                --enable-higher_rank \
+                --disable-quadninja \
+                --with-avholo="$FFLAGS -lavh_olo" \
+                --with-looptools="$FLDFLAGS -looptools -lgfortran" \
+                FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
+                CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
+        fi
     fi
 else
     ./configure \
