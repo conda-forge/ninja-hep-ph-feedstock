@@ -42,10 +42,10 @@ outputs:
         - grep
         - oneloop  # [build_platform != target_platform]
         # FIXME: Add looptools for osx-arm64
-        - looptools-static  # [(build_platform != target_platform) and (not (osx and arm64))]
+        - looptools-static  # [(build_platform != target_platform) and (not osx)]
       host:
         - oneloop
-        - looptools-static  # [not (osx and arm64)]
+        - looptools-static  # [not osx]
       run:
         - oneloop
 
@@ -68,7 +68,7 @@ outputs:
         - sed
         - grep
         # libooptools.a is needed at linktime, but not at runtime
-        - looptools-static  # [not (osx and arm64)]
+        - looptools-static  # [not osx]
       commands:
         - test -f $PREFIX/lib/libninja${SHLIB_EXT}
         # c.f. https://github.com/conda/conda-build/issues/3075
@@ -191,10 +191,10 @@ outputs:
         - sed
         - grep
         - oneloop-static  # [build_platform != target_platform]
-        - looptools-static  # [(build_platform != target_platform) and (not (osx and arm64))]
+        - looptools-static  # [(build_platform != target_platform) and (not osx)]
       host:
         - oneloop-static
-        - looptools-static  # [not (osx and arm64)]
+        - looptools-static  # [not osx]
 
     test:
       # As need to regenerate Makefiles, need all of the source files that
@@ -215,7 +215,7 @@ outputs:
         - sed
         - grep
         # libooptools.a and libavh_olo.a are needed at linktime, but not at runtime
-        - looptools-static  # [not (osx and arm64)]
+        - looptools-static  # [not osx]
         - oneloop-static
       commands:
         - test -f $PREFIX/lib/libninja.a
