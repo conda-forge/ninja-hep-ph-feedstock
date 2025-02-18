@@ -135,6 +135,7 @@ outputs:
         - make examples
 
         - cd examples
+        - otool -L simple_test  # [osx]
         - echo -e "\n# simple_test"
         - ./simple_test
         - echo -e "\n# simple_higher_rank_test"
