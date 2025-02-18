@@ -133,7 +133,6 @@ outputs:
         # c.f. https://github.com/peraro/ninja/blob/a3109d76d08287d772f42552076aa1b0a877e96b/configure.ac#L104-L109
         # c.f. https://github.com/peraro/ninja/blob/a3109d76d08287d772f42552076aa1b0a877e96b/examples/Makefile.am#L36-L40
         - sed -i 's/exninjastatic=true/exninjastatic=false/g' configure.ac  # [osx]
-        - grep exninjastatic configure.ac  # [osx]
 
         - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not osx]
         - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [osx]
@@ -141,10 +140,6 @@ outputs:
         - make examples
 
         - cd examples
-
-        - otool -L simple_test  # [osx]
-        - otool -l simple_test | grep RPATH  # [osx]
-
         - echo -e "\n# simple_test"
         - ./simple_test
         - echo -e "\n# simple_higher_rank_test"
@@ -281,8 +276,6 @@ outputs:
       {% if (linux and (x86_64 or ppc64le)) %}
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
       {% else %}
-        - grep exninjastatic configure.ac  # [osx]
-
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not (osx and arm64)]
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [osx and arm64]
       {% endif %}
