@@ -30,7 +30,7 @@ autoreconf --install
 # https://github.com/conda-forge/cfep/blob/main/cfep-18.md
 if [[ "${DISABLE_QUADMATH}" == true ]]; then
     echo -e "\n# libquadmath not supported on target platform ${target_platform} so disabling quadninja."
-    if [[ "${target_platform}" == osx-arm64 ]]; then
+    if [[ "$(uname)" == "Darwin" ]]; then
         ./configure \
             --prefix=$PREFIX \
             --enable-shared=yes \

@@ -28,7 +28,7 @@ autoreconf --install
 
 if [[ "${DISABLE_QUADMATH}" == true ]]; then
     echo -e "\n# libquadmath not supported on target platform ${target_platform} so disabling quadninja."
-    if [[ "${target_platform}" == osx-arm64 ]]; then
+    if [[ "$(uname)" == "Darwin" ]]; then
         ./configure \
             --prefix=$PREFIX \
             --enable-shared=no \
