@@ -28,7 +28,7 @@ autoreconf --install
 
 if [[ "${DISABLE_QUADMATH}" == true ]]; then
     echo -e "\n# libquadmath not supported on target platform ${target_platform} so disabling quadninja."
-    if [[ "${target_platform}" == osx-arm64 ]]; then
+    if [[ "$(uname)" == "Darwin" ]]; then
         ./configure \
             --prefix=$PREFIX \
             --enable-shared=no \
@@ -37,32 +37,19 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --disable-quadninja \
             --with-avholo="$FFLAGS -lavh_olo" \
             FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
-            CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
+            CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS" \
+            LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"
     else
-        if [[ "$(uname)" == "Darwin" ]]; then
-            ./configure \
-                --prefix=$PREFIX \
-                --enable-shared=no \
-                --enable-static=yes \
-                --enable-higher_rank \
-                --disable-quadninja \
-                --with-avholo="$FFLAGS -lavh_olo" \
-                --with-looptools="$FLDFLAGS -looptools -lgfortran" \
-                FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
-                CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS" \
-                LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"
-        else
-            ./configure \
-                --prefix=$PREFIX \
-                --enable-shared=no \
-                --enable-static=yes \
-                --enable-higher_rank \
-                --disable-quadninja \
-                --with-avholo="$FFLAGS -lavh_olo" \
-                --with-looptools="$FLDFLAGS -looptools -lgfortran" \
-                FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
-                CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
-        fi
+        ./configure \
+            --prefix=$PREFIX \
+            --enable-shared=no \
+            --enable-static=yes \
+            --enable-higher_rank \
+            --disable-quadninja \
+            --with-avholo="$FFLAGS -lavh_olo" \
+            --with-looptools="$FLDFLAGS -looptools -lgfortran" \
+            FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
+            CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
     fi
 else
     ./configure \
