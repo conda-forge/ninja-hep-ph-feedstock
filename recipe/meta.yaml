@@ -37,6 +37,9 @@ outputs:
         - make
         - pkg-config
         - gnuconfig
+        - gawk
+        - sed
+        - grep
         - oneloop  # [build_platform != target_platform]
         # FIXME: Add looptools for osx-arm64
         - looptools-static  # [(build_platform != target_platform) and (not (osx and arm64))]
