@@ -133,6 +133,7 @@ outputs:
         # c.f. https://github.com/peraro/ninja/blob/a3109d76d08287d772f42552076aa1b0a877e96b/configure.ac#L104-L109
         # c.f. https://github.com/peraro/ninja/blob/a3109d76d08287d772f42552076aa1b0a877e96b/examples/Makefile.am#L36-L40
         - sed -i 's/exninjastatic=true/exninjastatic=false/g' configure.ac  # [osx]
+        - grep exninjastatic configure.ac  # [osx]
 
         - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not (osx and arm64)]
         - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [osx and arm64]
@@ -308,6 +309,8 @@ outputs:
       {% if (linux and (x86_64 or ppc64le)) %}
         - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran -lquadmath
       {% else %}
+        - grep exninjastatic configure.ac  # [osx]
+
         - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran  # [not (osx and arm64)]
         - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran  # [osx and arm64]
       {% endif %}
