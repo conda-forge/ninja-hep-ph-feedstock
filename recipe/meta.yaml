@@ -231,7 +231,7 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/looptools.hh  # [not osx]
+        - test -f $PREFIX/include/ninja/looptools.hh  # [not (osx and arm64)]
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
@@ -283,8 +283,8 @@ outputs:
       {% else %}
         - grep exninjastatic configure.ac  # [osx]
 
-        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not osx]
-        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [osx]
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not (osx and arm64)]
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [osx and arm64]
       {% endif %}
         - make examples
 
@@ -311,8 +311,8 @@ outputs:
       {% if (linux and (x86_64 or ppc64le)) %}
         - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran -lquadmath
       {% else %}
-        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran  # [not osx]
-        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran  # [osx]
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran  # [not (osx and arm64)]
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran  # [osx and arm64]
       {% endif %}
         - ./simple_test
 
