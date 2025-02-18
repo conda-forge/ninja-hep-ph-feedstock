@@ -78,7 +78,7 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/looptools.hh
+        - test -f $PREFIX/include/ninja/looptools.hh  # [not osx]
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
@@ -231,7 +231,7 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/looptools.hh
+        - test -f $PREFIX/include/ninja/looptools.hh  # [not osx]
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
