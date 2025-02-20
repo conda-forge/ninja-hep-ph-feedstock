@@ -217,8 +217,8 @@ outputs:
         - sed
         - grep
         # libooptools.a and libavh_olo.a are needed at linktime, but not at runtime
-        - looptools-static  # [not osx]
         - oneloop-static
+        - looptools-static  # [not osx]
       commands:
         - test -f $PREFIX/lib/libninja.a
         # c.f. https://github.com/conda/conda-build/issues/3075
