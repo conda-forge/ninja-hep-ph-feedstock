@@ -41,7 +41,6 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             CXX="${CXX}" \
             CXXFLAGS="-fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" \
             CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS" \
-            LIBS="-lstdc++" \
             LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"
     else
         ./configure \
