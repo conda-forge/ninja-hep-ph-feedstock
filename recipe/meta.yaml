@@ -277,7 +277,7 @@ outputs:
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
       {% else %}
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not osx]
-        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" LIBS="-lstdc++" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" CXX="${CXX}" CXXFLAGS="-fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" LIBS="-lstdc++" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]
       {% endif %}
         - make examples
 
