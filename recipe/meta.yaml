@@ -281,7 +281,8 @@ outputs:
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not osx]
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" CXX="${CXX}" CXXFLAGS="-fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]
       {% endif %}
-        - make examples
+        - make examples  # [not osx]
+        - make examples LIBNINJA="${LDFLAGS} -lninja -lavh_olo"  # [osx]
 
         - cd examples
         - echo -e "\n# simple_test"
