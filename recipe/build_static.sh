@@ -29,6 +29,7 @@ autoreconf --install
 if [[ "${DISABLE_QUADMATH}" == true ]]; then
     echo -e "\n# libquadmath not supported on target platform ${target_platform} so disabling quadninja."
     if [[ "$(uname)" == "Darwin" ]]; then
+        # Following https://github.com/mg5amcnlo/HEPToolsInstallers/blob/d56fe6c04242360076be533a653c187493ef1187/installNinja.sh#L18-L19
         ./configure \
             --prefix=$PREFIX \
             --enable-shared=no \
@@ -37,7 +38,10 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --disable-quadninja \
             --with-avholo="$FFLAGS -lavh_olo" \
             FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
+            CXX="${CXX}" \
+            CXXFLAGS="${CXXFLAGS}" \
             CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS" \
+            LIBS="-lstdc++" \
             LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"
     else
         ./configure \
