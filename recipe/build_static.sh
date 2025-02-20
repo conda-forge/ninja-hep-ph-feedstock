@@ -78,3 +78,8 @@ make install
 make clean
 
 unset DISABLE_QUADMATH
+
+# DEBUG
+if [[ "$(uname)" == "Darwin" ]]; then
+    make examples
+fi
