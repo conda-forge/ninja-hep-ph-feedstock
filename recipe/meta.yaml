@@ -211,6 +211,8 @@ outputs:
         - automake
         - libtool
         - make
+        - pkg-config
+        - gnuconfig
         - gawk
         - sed
         - grep
@@ -272,6 +274,7 @@ outputs:
 
         # Given the way the examples/Makefile works, need to regenerate it and
         # other supporting files with configure again
+        - cp $BUILD_PREFIX/share/gnuconfig/config.* .
         - autoreconf --install
       {% if (linux and (x86_64 or ppc64le)) %}
         - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
