@@ -35,12 +35,12 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --enable-shared=no \
             --enable-static=yes \
             --enable-higher_rank \
-            --disable-quadninja \
             --with-avholo="$FFLAGS -lavh_olo" \
             FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
             CXX="${CXX}" \
             CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" \
             CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS -fPIC" \
+            --disable-quadninja \
             LIBS="-lc++" \
             LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"
     else
