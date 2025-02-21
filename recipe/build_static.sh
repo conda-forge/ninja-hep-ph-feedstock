@@ -39,8 +39,9 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --with-avholo="$FFLAGS -lavh_olo" \
             FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
             CXX="${CXX}" \
-            CXXFLAGS="-fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" \
-            CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS" \
+            CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" \
+            CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS -fPIC" \
+            LIBS="-lc++" \
             LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"
     else
         ./configure \
