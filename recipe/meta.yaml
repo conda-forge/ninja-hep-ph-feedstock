@@ -13,6 +13,8 @@ source:
   patches:
     - posix-compliant-shell.patch
     - update-version-number-to-v1.2.0.patch
+    # c.f. https://github.com/peraro/ninja/issues/5
+    - remove-version-file.patch
 
 build:
   number: 5

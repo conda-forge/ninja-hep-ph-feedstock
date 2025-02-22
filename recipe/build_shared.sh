@@ -2,12 +2,6 @@
 
 set -xe
 
-# FIXME: Unbreak builds for macOS using clang
-# c.f. https://github.com/peraro/ninja/issues/5
-if [[ -f VERSION ]]; then
-    rm VERSION
-fi
-
 export DISABLE_QUADMATH=false
 
 # libquadmath not supported on macOS or aarch64
