@@ -35,12 +35,13 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --enable-shared=no \
             --enable-static=yes \
             --enable-higher_rank \
-            --with-avholo="-L$PREFIX/lib -lavh_olo -lgfortran" \
-            FCINCLUDE="-I$PREFIX/include/oneloop" \
-            CXX="${CXX}" \
-            CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti" \
-            CPPFLAGS="-DNINJA_NO_EXCEPTIONS -fPIC" \
             --disable-quadninja \
+            --with-avholo="${FFLAGS} -lavh_olo -lgfortran" \
+            FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" \
+            CXX="${CXX}" \
+            CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" \
+            CPPFLAGS="-DNINJA_NO_EXCEPTIONS -fPIC ${CPPFLAGS}" \
+            LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}" \
             LIBS="-lc++"
     else
         ./configure \
@@ -49,10 +50,12 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --enable-static=yes \
             --enable-higher_rank \
             --disable-quadninja \
-            --with-avholo="$FFLAGS -lavh_olo" \
-            --with-looptools="$FLDFLAGS -looptools -lgfortran" \
-            FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
-            CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
+            --with-avholo="${FFLAGS} -lavh_olo" \
+            --with-looptools="${FLDFLAGS} -looptools -lgfortran" \
+            FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" \
+            CXXFLAGS="${CXXFLAGS}" \
+            CPPFLAGS="-DNINJA_NO_EXCEPTIONS -fPIC ${CPPFLAGS}" \
+            LDFLAGS="${LDFLAGS}"
     fi
 else
     ./configure \
@@ -61,10 +64,12 @@ else
         --enable-static=yes \
         --enable-higher_rank \
         --enable-quadninja \
-        --with-avholo="$FFLAGS -lavh_olo" \
-        --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" \
-        FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
-        CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
+        --with-avholo="${FFLAGS} -lavh_olo" \
+        --with-looptools="${FLDFLAGS} -looptools -lgfortran -lquadmath" \
+        FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" \
+        CXXFLAGS="${CXXFLAGS}" \
+        CPPFLAGS="-DNINJA_NO_EXCEPTIONS -fPIC ${CPPFLAGS}" \
+        LDFLAGS="${LDFLAGS}"
 fi
 
 # Makefile is not parallel safe so can't use 'make --jobs="${CPU_COUNT}"'
