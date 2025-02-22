@@ -135,7 +135,7 @@ outputs:
         - sed -i 's/exninjastatic=true/exninjastatic=false/g' configure.ac  # [osx]
 
         - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not osx]
-        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" CXX="${CXX}" CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS -fPIC" --disable-quadninja LIBS="-lc++" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]  # [osx]
+        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" CXX="${CXX}" CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS -fPIC" --disable-quadninja LIBS="-lc++" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]
       {% endif %}
         - make clean
         - make examples
