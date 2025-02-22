@@ -13,9 +13,11 @@ source:
   patches:
     - posix-compliant-shell.patch
     - update-version-number-to-v1.2.0.patch
+    # c.f. https://github.com/peraro/ninja/issues/5
+    - remove-version-file.patch
 
 build:
-  number: 4
+  number: 5
 
 outputs:
   - name: {{ name }}-hep-ph
@@ -23,8 +25,7 @@ outputs:
     script: build_shared.sh
 
     build:
-      # libquadmath is required, so macOS is not supported
-      skip: true  # [not linux]
+      skip: true  # [win]
       run_exports:
         - {{ pin_subpackage('ninja-hep-ph', max_pin='x.x') }}
 
@@ -38,11 +39,15 @@ outputs:
         - make
         - pkg-config
         - gnuconfig
+        - gawk
+        - sed
+        - grep
         - oneloop  # [build_platform != target_platform]
-        - looptools-static  # [build_platform != target_platform]
+        # FIXME: Add looptools for osx-arm64
+        - looptools-static  # [(build_platform != target_platform) and (not osx)]
       host:
         - oneloop
-        - looptools-static
+        - looptools-static  # [not osx]
       run:
         - oneloop
 
@@ -61,8 +66,11 @@ outputs:
         - automake
         - libtool
         - make
+        - gawk
+        - sed
+        - grep
         # libooptools.a is needed at linktime, but not at runtime
-        - looptools-static
+        - looptools-static  # [not osx]
       commands:
         - test -f $PREFIX/lib/libninja${SHLIB_EXT}
         # c.f. https://github.com/conda/conda-build/issues/3075
@@ -72,7 +80,7 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/looptools.hh
+        - test -f $PREFIX/include/ninja/looptools.hh  # [not osx]
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
@@ -89,6 +97,7 @@ outputs:
         - test -f $PREFIX/include/ninja/zero_float.hh
         - test -f $PREFIX/include/ninjago_module.mod
         - test -f $PREFIX/include/ninjavholo.mod
+      {% if (linux and (x86_64 or ppc64le)) %}
         - test -f $PREFIX/include/quadninja/avholo.hh
         - test -f $PREFIX/include/quadninja/integral_library.hh
         - test -f $PREFIX/include/quadninja/looptools.hh
@@ -107,6 +116,9 @@ outputs:
         - test -f $PREFIX/include/quadninja/thread_safe_integral_library.hh
         - test -f $PREFIX/include/quadninja/types.hh
         - test -f $PREFIX/include/quadninja/zero_float.hh
+      {% else %}
+        - test ! -d $PREFIX/include/quadninja
+      {% endif %}
 
         - ninja-config --help
         - ninja-config --version
@@ -115,7 +127,19 @@ outputs:
         # Given the way the examples/Makefile works, need to regenerate it and
         # other supporting files with configure again
         - autoreconf --install
+
+      {% if (linux and (x86_64 or ppc64le)) %}
         - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+      {% else %}
+        # FIXME: If on macOS and --with-looptools is used, only the static library form of libninja will be looked for during 'make examples'.
+        # c.f. https://github.com/peraro/ninja/blob/a3109d76d08287d772f42552076aa1b0a877e96b/configure.ac#L104-L109
+        # c.f. https://github.com/peraro/ninja/blob/a3109d76d08287d772f42552076aa1b0a877e96b/examples/Makefile.am#L36-L40
+        - sed -i 's/exninjastatic=true/exninjastatic=false/g' configure.ac  # [osx]
+
+        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not osx]
+        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" CXX="${CXX}" CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS -fPIC" --disable-quadninja LIBS="-lc++" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]
+      {% endif %}
+        - make clean
         - make examples
 
         - cd examples
@@ -137,7 +161,12 @@ outputs:
         # Show how to build manually
         - make clean
         - echo -e "\n# simple_test by hand"
+      {% if (linux and (x86_64 or ppc64le)) %}
         - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran -lquadmath
+      {% else %}
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran  # [not osx]
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran  # [osx]
+      {% endif %}
         - ./simple_test
 
         - make clean
@@ -149,8 +178,7 @@ outputs:
     script: build_static.sh
 
     build:
-      # libquadmath is required, so macOS is not supported
-      skip: true  # [not linux]
+      skip: true  # [win]
 
     requirements:
       build:
@@ -162,11 +190,14 @@ outputs:
         - make
         - pkg-config
         - gnuconfig
+        - gawk
+        - sed
+        - grep
         - oneloop-static  # [build_platform != target_platform]
-        - looptools-static  # [build_platform != target_platform]
+        - looptools-static  # [(build_platform != target_platform) and (not osx)]
       host:
         - oneloop-static
-        - looptools-static
+        - looptools-static  # [not osx]
 
     test:
       # As need to regenerate Makefiles, need all of the source files that
@@ -183,9 +214,14 @@ outputs:
         - automake
         - libtool
         - make
+        - pkg-config
+        - gnuconfig
+        - gawk
+        - sed
+        - grep
         # libooptools.a and libavh_olo.a are needed at linktime, but not at runtime
-        - looptools-static
         - oneloop-static
+        - looptools-static  # [not osx]
       commands:
         - test -f $PREFIX/lib/libninja.a
         # c.f. https://github.com/conda/conda-build/issues/3075
@@ -195,7 +231,7 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/looptools.hh
+        - test -f $PREFIX/include/ninja/looptools.hh  # [not osx]
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
@@ -212,6 +248,7 @@ outputs:
         - test -f $PREFIX/include/ninja/zero_float.hh
         - test -f $PREFIX/include/ninjago_module.mod
         - test -f $PREFIX/include/ninjavholo.mod
+      {% if (linux and (x86_64 or ppc64le)) %}
         - test -f $PREFIX/include/quadninja/avholo.hh
         - test -f $PREFIX/include/quadninja/integral_library.hh
         - test -f $PREFIX/include/quadninja/looptools.hh
@@ -230,6 +267,9 @@ outputs:
         - test -f $PREFIX/include/quadninja/thread_safe_integral_library.hh
         - test -f $PREFIX/include/quadninja/types.hh
         - test -f $PREFIX/include/quadninja/zero_float.hh
+      {% else %}
+        - test ! -d $PREFIX/include/quadninja
+      {% endif %}
 
         - ninja-config --help
         - ninja-config --version
@@ -238,7 +278,13 @@ outputs:
         # Given the way the examples/Makefile works, need to regenerate it and
         # other supporting files with configure again
         - autoreconf --install
-        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+      {% if (linux and (x86_64 or ppc64le)) %}
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="${FFLAGS} -lavh_olo" --with-looptools="${FLDFLAGS} -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop"
+      {% else %}
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="${FFLAGS} -lavh_olo" --with-looptools="${FLDFLAGS} -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop"  # [not osx]
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="${FFLAGS} -lavh_olo -lgfortran" FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" CXX="${CXX}" CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS -fPIC" --disable-quadninja LIBS="-lc++" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]
+      {% endif %}
+        - make clean
         - make examples
 
         - cd examples
@@ -260,7 +306,13 @@ outputs:
         # Show how to build manually
         - make clean
         - echo -e "\n# simple_test by hand"
+
+      {% if (linux and (x86_64 or ppc64le)) %}
         - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran -lquadmath
+      {% else %}
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran  # [not osx]
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran  # [osx]
+      {% endif %}
         - ./simple_test
 
         - make clean
