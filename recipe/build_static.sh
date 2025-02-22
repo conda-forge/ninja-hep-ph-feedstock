@@ -35,7 +35,7 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --enable-shared=no \
             --enable-static=yes \
             --enable-higher_rank \
-            --with-avholo="-L$PREFIX/lib -lavh_olo" \
+            --with-avholo="-L$PREFIX/lib -lavh_olo -lgfortran" \
             FCINCLUDE="-I$PREFIX/include/oneloop" \
             CXX="${CXX}" \
             CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti" \
