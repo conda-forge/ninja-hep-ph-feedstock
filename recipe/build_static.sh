@@ -30,12 +30,12 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --enable-static=yes \
             --enable-higher_rank \
             --disable-quadninja \
-            --with-avholo="${FFLAGS} -lavh_olo" \
+            --with-avholo="${FFLAGS} -lavh_olo -lgfortran" \
             FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" \
             CXX="${CXX}" \
             CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" \
             CPPFLAGS="-DNINJA_NO_EXCEPTIONS -fPIC ${CPPFLAGS}" \
-            LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS} -lgfortran" \
+            LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}" \
             LIBS="-lc++"
     else
         ./configure \
@@ -44,11 +44,11 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --enable-static=yes \
             --enable-higher_rank \
             --disable-quadninja \
-            --with-avholo="${FFLAGS} -lavh_olo" \
+            --with-avholo="${FFLAGS} -lavh_olo -lgfortran" \
             FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" \
             CXXFLAGS="${CXXFLAGS}" \
             CPPFLAGS="-DNINJA_NO_EXCEPTIONS -fPIC ${CPPFLAGS}" \
-            LDFLAGS="${LDFLAGS} -lgfortran"
+            LDFLAGS="${LDFLAGS}"
     fi
 else
     ./configure \
@@ -57,11 +57,11 @@ else
         --enable-static=yes \
         --enable-higher_rank \
         --enable-quadninja \
-        --with-avholo="${FFLAGS} -lavh_olo" \
+        --with-avholo="${FFLAGS} -lavh_olo -lgfortran" \
         FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" \
         CXXFLAGS="${CXXFLAGS}" \
         CPPFLAGS="-DNINJA_NO_EXCEPTIONS -fPIC ${CPPFLAGS}" \
-        LDFLAGS="${LDFLAGS} -lgfortran"
+        LDFLAGS="${LDFLAGS}"
 fi
 
 # Makefile is not parallel safe so can't use 'make --jobs="${CPU_COUNT}"'
