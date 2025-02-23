@@ -75,6 +75,7 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
+        - test ! -f $PREFIX/include/ninja/looptools.hh
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
@@ -94,6 +95,7 @@ outputs:
       {% if (linux and (x86_64 or ppc64le)) %}
         - test -f $PREFIX/include/quadninja/avholo.hh
         - test -f $PREFIX/include/quadninja/integral_library.hh
+        - test ! -f $PREFIX/include/quadninja/looptools.hh
         - test -f $PREFIX/include/quadninja/momentum.hh
         - test -f $PREFIX/include/quadninja/ninja.hh
         - test -f $PREFIX/include/quadninja/ninja_config.h
@@ -216,6 +218,7 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
+        - test ! -f $PREFIX/include/ninja/looptools.hh
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
@@ -235,6 +238,7 @@ outputs:
       {% if (linux and (x86_64 or ppc64le)) %}
         - test -f $PREFIX/include/quadninja/avholo.hh
         - test -f $PREFIX/include/quadninja/integral_library.hh
+        - test ! -f $PREFIX/include/quadninja/looptools.hh
         - test -f $PREFIX/include/quadninja/momentum.hh
         - test -f $PREFIX/include/quadninja/ninja.hh
         - test -f $PREFIX/include/quadninja/ninja_config.h
