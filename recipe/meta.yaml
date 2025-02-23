@@ -207,7 +207,7 @@ outputs:
         - gawk
         - sed
         - grep
-        # libavh_olo.a are needed at linktime, but not at runtime
+        # libavh_olo.a is needed at linktime, but not at runtime
         - oneloop-static
       commands:
         - test -f $PREFIX/lib/libninja.a
