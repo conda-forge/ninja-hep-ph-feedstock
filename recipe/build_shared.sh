@@ -42,7 +42,6 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --enable-higher_rank \
             --disable-quadninja \
             --with-avholo="$FFLAGS -lavh_olo" \
-            --with-looptools="$FLDFLAGS -looptools -lgfortran" \
             FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
             CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
     fi
@@ -54,7 +53,6 @@ else
         --enable-higher_rank \
         --enable-quadninja \
         --with-avholo="$FFLAGS -lavh_olo" \
-        --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" \
         FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" \
         CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS"
 fi
