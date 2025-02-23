@@ -207,9 +207,6 @@ outputs:
         - grep
         # libavh_olo.a are needed at linktime, but not at runtime
         - oneloop-static
-        # DEBUG
-        - mg5amcnlo
-        - curl
       commands:
         - test -f $PREFIX/lib/libninja.a
         # c.f. https://github.com/conda/conda-build/issues/3075
@@ -304,11 +301,6 @@ outputs:
         - make clean
         - cd ..
         - make clean
-
-        # Debug
-        - conda list
-        - curl -sLO https://raw.githubusercontent.com/conda-forge/mg5amcnlo-feedstock/a4bd3a92f32054d9af10341b7289fd3ead42c73d/recipe/tutorial_amc-at-nlo.mg5
-        - mg5_aMC tutorial_amc-at-nlo.mg5
 
 about:
   home: https://github.com/peraro/ninja
