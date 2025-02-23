@@ -44,8 +44,7 @@ if [[ "${DISABLE_QUADMATH}" == true ]]; then
             --enable-static=yes \
             --enable-higher_rank \
             --disable-quadninja \
-            --with-avholo="${FFLAGS} -lavh_olo" \
-            --with-looptools="${FLDFLAGS} -looptools -lgfortran" \
+            --with-avholo="${FFLAGS} -lavh_olo -lgfortran" \
             FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" \
             CXXFLAGS="${CXXFLAGS}" \
             CPPFLAGS="-DNINJA_NO_EXCEPTIONS -fPIC ${CPPFLAGS}" \
@@ -58,8 +57,7 @@ else
         --enable-static=yes \
         --enable-higher_rank \
         --enable-quadninja \
-        --with-avholo="${FFLAGS} -lavh_olo" \
-        --with-looptools="${FLDFLAGS} -looptools -lgfortran -lquadmath" \
+        --with-avholo="${FFLAGS} -lavh_olo -lgfortran" \
         FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" \
         CXXFLAGS="${CXXFLAGS}" \
         CPPFLAGS="-DNINJA_NO_EXCEPTIONS -fPIC ${CPPFLAGS}" \

@@ -17,7 +17,7 @@ source:
     - remove-version-file.patch
 
 build:
-  number: 1
+  number: 2
 
 outputs:
   - name: {{ name }}-hep-ph
@@ -43,11 +43,8 @@ outputs:
         - sed
         - grep
         - oneloop  # [build_platform != target_platform]
-        # FIXME: Add looptools for osx-arm64
-        - looptools-static  # [(build_platform != target_platform) and (not osx)]
       host:
         - oneloop
-        - looptools-static  # [not osx]
       run:
         - oneloop
 
@@ -69,8 +66,6 @@ outputs:
         - gawk
         - sed
         - grep
-        # libooptools.a is needed at linktime, but not at runtime
-        - looptools-static  # [not osx]
       commands:
         - test -f $PREFIX/lib/libninja${SHLIB_EXT}
         # c.f. https://github.com/conda/conda-build/issues/3075
@@ -80,7 +75,7 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/looptools.hh  # [not osx]
+        - test ! -f $PREFIX/include/ninja/looptools.hh
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
@@ -100,7 +95,7 @@ outputs:
       {% if (linux and (x86_64 or ppc64le)) %}
         - test -f $PREFIX/include/quadninja/avholo.hh
         - test -f $PREFIX/include/quadninja/integral_library.hh
-        - test -f $PREFIX/include/quadninja/looptools.hh
+        - test ! -f $PREFIX/include/quadninja/looptools.hh
         - test -f $PREFIX/include/quadninja/momentum.hh
         - test -f $PREFIX/include/quadninja/ninja.hh
         - test -f $PREFIX/include/quadninja/ninja_config.h
@@ -129,15 +124,10 @@ outputs:
         - autoreconf --install
 
       {% if (linux and (x86_64 or ppc64le)) %}
-        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
+        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --enable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"
       {% else %}
-        # FIXME: If on macOS and --with-looptools is used, only the static library form of libninja will be looked for during 'make examples'.
-        # c.f. https://github.com/peraro/ninja/blob/a3109d76d08287d772f42552076aa1b0a877e96b/configure.ac#L104-L109
-        # c.f. https://github.com/peraro/ninja/blob/a3109d76d08287d772f42552076aa1b0a877e96b/examples/Makefile.am#L36-L40
-        - sed -i 's/exninjastatic=true/exninjastatic=false/g' configure.ac  # [osx]
-
-        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" --with-looptools="$FLDFLAGS -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not osx]
-        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" CXX="${CXX}" CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS -fPIC" --disable-quadninja LIBS="-lc++" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]
+        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop"  # [not osx]
+        - ./configure --prefix=$PREFIX --enable-shared=yes --enable-static=no --enable-higher_rank --disable-quadninja --with-avholo="$FFLAGS -lavh_olo" FCINCLUDE="${FCINCLUDE} -I$PREFIX/include/oneloop" CXX="${CXX}" CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS -fPIC" LIBS="-lc++" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]
       {% endif %}
         - make clean
         - make examples
@@ -162,9 +152,9 @@ outputs:
         - make clean
         - echo -e "\n# simple_test by hand"
       {% if (linux and (x86_64 or ppc64le)) %}
-        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran -lquadmath
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran -lquadmath
       {% else %}
-        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran  # [not osx]
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran  # [not osx]
         - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran  # [osx]
       {% endif %}
         - ./simple_test
@@ -194,10 +184,8 @@ outputs:
         - sed
         - grep
         - oneloop-static  # [build_platform != target_platform]
-        - looptools-static  # [(build_platform != target_platform) and (not osx)]
       host:
         - oneloop-static
-        - looptools-static  # [not osx]
 
     test:
       # As need to regenerate Makefiles, need all of the source files that
@@ -219,9 +207,8 @@ outputs:
         - gawk
         - sed
         - grep
-        # libooptools.a and libavh_olo.a are needed at linktime, but not at runtime
+        # libavh_olo.a is needed at linktime, but not at runtime
         - oneloop-static
-        - looptools-static  # [not osx]
       commands:
         - test -f $PREFIX/lib/libninja.a
         # c.f. https://github.com/conda/conda-build/issues/3075
@@ -231,7 +218,7 @@ outputs:
         - test -f $PREFIX/include/mninja.mod
         - test -f $PREFIX/include/ninja/avholo.hh
         - test -f $PREFIX/include/ninja/integral_library.hh
-        - test -f $PREFIX/include/ninja/looptools.hh  # [not osx]
+        - test ! -f $PREFIX/include/ninja/looptools.hh
         - test -f $PREFIX/include/ninja/momentum.hh
         - test -f $PREFIX/include/ninja/ninja.hh
         - test -f $PREFIX/include/ninja/ninja_config.h
@@ -251,7 +238,7 @@ outputs:
       {% if (linux and (x86_64 or ppc64le)) %}
         - test -f $PREFIX/include/quadninja/avholo.hh
         - test -f $PREFIX/include/quadninja/integral_library.hh
-        - test -f $PREFIX/include/quadninja/looptools.hh
+        - test ! -f $PREFIX/include/quadninja/looptools.hh
         - test -f $PREFIX/include/quadninja/momentum.hh
         - test -f $PREFIX/include/quadninja/ninja.hh
         - test -f $PREFIX/include/quadninja/ninja_config.h
@@ -279,10 +266,10 @@ outputs:
         # other supporting files with configure again
         - autoreconf --install
       {% if (linux and (x86_64 or ppc64le)) %}
-        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="${FFLAGS} -lavh_olo" --with-looptools="${FLDFLAGS} -looptools -lgfortran -lquadmath" FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop"
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --enable-quadninja --with-avholo="${FFLAGS} -lavh_olo -lgfortran" FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" LDFLAGS="${LDFLAGS}"
       {% else %}
-        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="${FFLAGS} -lavh_olo" --with-looptools="${FLDFLAGS} -looptools -lgfortran" FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop"  # [not osx]
-        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="${FFLAGS} -lavh_olo -lgfortran" FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" CXX="${CXX}" CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS -fPIC" --disable-quadninja LIBS="-lc++" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="${FFLAGS} -lavh_olo -lgfortran" FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" LDFLAGS="${LDFLAGS}"  # [not osx]
+        - ./configure --prefix=$PREFIX --enable-shared=no --enable-static=yes --enable-higher_rank --disable-quadninja --with-avholo="${FFLAGS} -lavh_olo -lgfortran" FCINCLUDE="${FCINCLUDE} -I${PREFIX}/include/oneloop" CXX="${CXX}" CXXFLAGS="-O2 -fcx-fortran-rules -fno-exceptions -fno-rtti ${CXXFLAGS}" CPPFLAGS="${CPPFLAGS} -DNINJA_NO_EXCEPTIONS -fPIC" LIBS="-lc++" LDFLAGS="-Wl,-no_compact_unwind ${LDFLAGS}"  # [osx]
       {% endif %}
         - make clean
         - make examples
@@ -308,9 +295,9 @@ outputs:
         - echo -e "\n# simple_test by hand"
 
       {% if (linux and (x86_64 or ppc64le)) %}
-        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran -lquadmath
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran -lquadmath
       {% else %}
-        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -looptools -lgfortran  # [not osx]
+        - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran  # [not osx]
         - $CXX simple_test.cc mynum.cc -o simple_test $CXXFLAGS -I./ -I$PREFIX/include/ninja $LDFLAGS -lninja -lavh_olo -lgfortran  # [osx]
       {% endif %}
         - ./simple_test
