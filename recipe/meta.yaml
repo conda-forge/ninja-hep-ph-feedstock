@@ -17,7 +17,7 @@ source:
     - remove-version-file.patch
 
 build:
-  number: 6
+  number: 7
 
 outputs:
   - name: {{ name }}-hep-ph
