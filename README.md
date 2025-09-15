@@ -3,6 +3,35 @@ About ninja-hep-ph-feedstock
 
 Feedstock license: [BSD-3-Clause](https://github.com/conda-forge/ninja-hep-ph-feedstock/blob/main/LICENSE.txt)
 
+
+About ninja-hep-ph
+------------------
+
+Home: https://github.com/peraro/ninja
+
+Package license: GPL-3.0-only
+
+Summary: Ninja: Automated Integrand Reduction via Laurent Expansion for One-Loop Amplitudes
+
+Development: https://github.com/peraro/ninja
+
+Ninja implements the Laurent series expansion method for the computation of
+one-loop integrals.
+
+It is based on:
+* P. Mastrolia, E. Mirabella and T. Peraro, "_Integrand reduction of
+one-loop scattering amplitudes through Laurent series expansion_,"
+JHEP 1206 (2012) 095
+[arXiv:1203.0291 [hep-ph]](https://arxiv.org/abs/1203.0291)
+DOI: [10.1007/JHEP06(2012)095](https://doi.org/10.1007/JHEP06(2012)095)
+* T. Peraro, "_Ninja: Automated Integrand Reduction via Laurent Expansion
+for One-Loop Amplitudes_," Comput. Phys. Commun. 185 (2014) 2771
+[arXiv:1403.1229 [hep-ph]](http://arxiv.org/abs/1403.1229)
+DOI: [10.1016/j.cpc.2014.06.017](https://doi.org/10.1016/j.cpc.2014.06.017)
+
+About ninja-split
+-----------------
+
 Home: https://github.com/peraro/ninja
 
 Package license: GPL-3.0-only
@@ -78,6 +107,13 @@ Current build status
                   <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/ninja-hep-ph-feedstock?branchName=main&jobName=osx&configuration=osx%20osx_arm64_" alt="variant">
                 </a>
               </td>
+            </tr><tr>
+              <td>win_64</td>
+              <td>
+                <a href="https://dev.azure.com/conda-forge/feedstock-builds/_build/latest?definitionId=24224&branchName=main">
+                  <img src="https://dev.azure.com/conda-forge/feedstock-builds/_apis/build/status/ninja-hep-ph-feedstock?branchName=main&jobName=win&configuration=win%20win_64_" alt="variant">
+                </a>
+              </td>
             </tr>
           </tbody>
         </table>
@@ -93,6 +129,7 @@ Current release info
 | --- | --- | --- | --- |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-ninja--hep--ph-green.svg)](https://anaconda.org/conda-forge/ninja-hep-ph) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/ninja-hep-ph.svg)](https://anaconda.org/conda-forge/ninja-hep-ph) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/ninja-hep-ph.svg)](https://anaconda.org/conda-forge/ninja-hep-ph) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/ninja-hep-ph.svg)](https://anaconda.org/conda-forge/ninja-hep-ph) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-ninja--hep--ph--static-green.svg)](https://anaconda.org/conda-forge/ninja-hep-ph-static) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/ninja-hep-ph-static.svg)](https://anaconda.org/conda-forge/ninja-hep-ph-static) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/ninja-hep-ph-static.svg)](https://anaconda.org/conda-forge/ninja-hep-ph-static) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/ninja-hep-ph-static.svg)](https://anaconda.org/conda-forge/ninja-hep-ph-static) |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-ninja--split-green.svg)](https://anaconda.org/conda-forge/ninja-split) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/ninja-split.svg)](https://anaconda.org/conda-forge/ninja-split) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/ninja-split.svg)](https://anaconda.org/conda-forge/ninja-split) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/ninja-split.svg)](https://anaconda.org/conda-forge/ninja-split) |
 
 Installing ninja-hep-ph
 =======================
@@ -104,16 +141,16 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `ninja-hep-ph, ninja-hep-ph-static` can be installed with `conda`:
+Once the `conda-forge` channel has been enabled, `ninja-hep-ph, ninja-hep-ph-static, ninja-split` can be installed with `conda`:
 
 ```
-conda install ninja-hep-ph ninja-hep-ph-static
+conda install ninja-hep-ph ninja-hep-ph-static ninja-split
 ```
 
 or with `mamba`:
 
 ```
-mamba install ninja-hep-ph ninja-hep-ph-static
+mamba install ninja-hep-ph ninja-hep-ph-static ninja-split
 ```
 
 It is possible to list all of the versions of `ninja-hep-ph` available on your platform with `conda`:
