@@ -12,11 +12,6 @@ recipe:
 source:
   url: https://github.com/peraro/ninja/archive/v${{ version }}.tar.gz
   sha256: 51482e6370f257543577a1ef50bc4f0ca34e2af851d9806ecf00cab2dafcf9d8
-  patches:
-    - posix-compliant-shell.patch
-    - update-version-number-to-v1.2.0.patch
-    # c.f. https://github.com/peraro/ninja/issues/5
-    - remove-version-file.patch
 
 build:
   number: 0
